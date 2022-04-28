@@ -12,7 +12,7 @@ sever::sever(QWidget *parent) :
     ui->output->setStyleSheet("background-color: rgba(0, 0, 0, 1)");
     server = new QTcpServer();
     connect(server,SIGNAL(newConnection()),this,SLOT(addConnect()));
-    connect(server,SIGNAL(disconnect()),this,SLOT(disConnect()));
+    //connect(server,SIGNAL(disconnect()),this,SLOT(disConnect()));
     port = DEFAULT_PORT;
     address = QHostAddress::LocalHost;
     ui->portNumber->setText(QString::number(port));
@@ -28,11 +28,14 @@ sever::~sever()
 
 void sever::disConnect()
 {
-    if(server->isListening())
+    if(server->isListening()){
         server->close();
         ui->start->setEnabled(true);
         ui->stop->setEnabled(false);
-
+    }
+    else {
+           qDebug()<< "Disconnect faile!!";
+        }
 }
 
 void sever::on_start_clicked()
@@ -44,10 +47,7 @@ void sever::on_start_clicked()
       ui->stop->setEnabled(true);
   }
   else {
-      QMessageBox msgBox;
-      msgBox.setText("Sever can't srart. Check IP or port !!!");
-      msgBox.setWindowTitle("Erorr!!");
-      msgBox.exec();
+      qDebug()<<"Sever can't srart. Check IP or port !!!";
   }
 }
 
@@ -57,6 +57,7 @@ void sever::addConnect()
     QBuffer *buffer = new QBuffer(this);
     buffer->open(QIODevice::ReadWrite);
     data.insert(connection,buffer);
+    connections.append(connection);
     connect(connection,SIGNAL(disconnected()),this,SLOT(removeConnect()));
     connect(connection,SIGNAL(readyRead()),this,SLOT(outputData()));
 
@@ -108,13 +109,18 @@ void sever::wrongMessage()
 void sever::on_stop_clicked()
 {
     if(server->isListening()){
-        disConnect();
+        server->close();
+        for(QTcpSocket *socket : connections){
+            socket->disconnectFromHost();
+            socket->deleteLater();
+        }
+
+
+        ui->start->setEnabled(true);
+        ui->stop->setEnabled(false);
+
     } else {
-        QMessageBox msgBox;
-        msgBox.setText("Not connect!!!");
-        msgBox.setWindowTitle("Erorr!!");
-        msgBox.exec();
-
+        qDebug() << "No connected!!!";
+}
 }
 
-}

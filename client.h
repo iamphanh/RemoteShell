@@ -1,6 +1,6 @@
 #ifndef CLIENT_H
 #define CLIENT_H
-
+#include <QDebug>
 #include <QMainWindow>
 #include<QBuffer>
 #include<QTcpServer>

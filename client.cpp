@@ -35,9 +35,7 @@ void client::on_disconnect_clicked()
         setDisconnect();
 }
     else{
-        QMessageBox msgBox;
-        msgBox.setText("Not connect !!!");
-        msgBox.exec();
+        qDebug()<<"Not connect !!!";
     }
 
 }
@@ -46,10 +44,7 @@ void client::send()
 {
 
         if(socket->error() == QAbstractSocket::RemoteHostClosedError){
-           QMessageBox msgBox;
-           msgBox.setWindowTitle("Erorr");
-           msgBox.setText("Not connect !!!");
-           msgBox.exec();
+           qDebug()<<"Not connect !!!";
        }
         else {
             QString shell = ui->input->text();
@@ -69,10 +64,11 @@ void client::on_connect_clicked()
         if(socket->waitForConnected(3000)){
             setConnect();
         } else{
-            QMessageBox msgBox;
-            msgBox.setWindowTitle("Erorr!!!");
-            msgBox.setText("Connection failed !!!");
-            msgBox.exec();
+            if(socket->error()==QAbstractSocket::RemoteHostClosedError){
+                 qDebug()<<"Server not listening!!!";
+            } else{
+                qDebug()<<"Connection failed !!!";
+            }
         }
      }
 }

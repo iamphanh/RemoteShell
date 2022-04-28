@@ -1,6 +1,6 @@
 #ifndef SEVER_H
 #define SEVER_H
-
+#include <QDebug>
 #include <QMainWindow>
 #include<QTcpServer>
 #include<QTcpSocket>

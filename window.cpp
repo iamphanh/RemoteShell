@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     sever w;
-    client g;
+    client g,h;
     w.setWindowTitle("Server");
     g.setWindowTitle("Client");
     g.show();
